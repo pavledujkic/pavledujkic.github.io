@@ -9,6 +9,6 @@ export const site = {
   links: {
     github: "https://github.com/pavledujkic",
     /** Shown in the footer and About when set. */
-    email: "",
+    email: "dujkicp@gmail.com",
   },
 };
