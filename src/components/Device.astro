@@ -49,7 +49,15 @@ const [a, b] = project.colors;
         <span class="off">Play with sound</span><span class="on">Mute</span>
       </button>
     </div>
-    {clip.captions ? <p class="cue" data-cue></p> : null}
+    {
+      clip.captions ? (
+        <div class="cue-wrap">
+          <div class="cue-clip">
+            <p class="cue" data-cue />
+          </div>
+        </div>
+      ) : null
+    }
   </figcaption>
 </figure>
 
@@ -107,7 +115,9 @@ const [a, b] = project.colors;
   }
 
   figcaption {
-    position: relative;
+    display: grid;
+    justify-items: center;
+    width: 100%;
   }
 
   .controls {
@@ -158,26 +168,33 @@ const [a, b] = project.colors;
     display: inline;
   }
 
-  /* The line being said, under the buttons while the clip plays with sound. Out of the flow, so
-     nothing moves when it appears. */
+  /* The line being said, under the buttons while the clip plays with sound. It opens (and
+     closes) smoothly and keeps two lines' room, so the page doesn't move from line to line. */
+  .cue-wrap {
+    display: grid;
+    grid-template-rows: 0fr;
+    width: 100%;
+    transition: grid-template-rows 0.3s var(--ease);
+  }
+
+  [data-audible] .cue-wrap {
+    grid-template-rows: 1fr;
+  }
+
+  .cue-clip {
+    min-height: 0;
+    overflow: hidden;
+  }
+
   .cue {
-    position: absolute;
-    top: calc(100% + 0.7rem);
-    left: 50%;
-    width: max-content;
-    max-width: min(22rem, 86vw);
-    transform: translateX(-50%);
+    min-height: calc(2 * 1.45em + 0.9rem);
     margin: 0;
+    padding: 0.9rem 0.25rem 0;
     color: var(--text-2);
     font-size: 0.8125rem;
     line-height: 1.45;
     text-align: center;
     text-wrap: balance;
-    visibility: hidden;
-  }
-
-  [data-audible] .cue {
-    visibility: visible;
   }
 
   .sound .on,
