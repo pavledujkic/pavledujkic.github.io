@@ -50,22 +50,22 @@ const ogImage = new URL(image, Astro.site);
   <body>
     <a class="skip" href="#main">Skip to content</a>
     <header class="site-header wrap">
-      <a class="brand" href="/" aria-label={`${site.name}, home`}>{site.name}</a>
+      <a class="brand hit" href="/" aria-label={`${site.name}, home`}>{site.name}</a>
       <nav aria-label="Main">
-        <a href="/#work">Work</a>
-        <a href="/#about">About</a>
-        <a href={site.links.github} rel="me">GitHub<span aria-hidden="true"> ↗</span></a>
+        <a class="hit" href="/#work">Work</a>
+        <a class="hit" href="/#about">About</a>
+        <a class="hit" href={site.links.github} rel="me">GitHub<span aria-hidden="true"> ↗</span></a>
       </nav>
     </header>
-    <main id="main">
+    <main id="main" class="main">
       <slot />
     </main>
     <footer class="wrap">
       <div class="site-footer">
         <p>© {new Date().getFullYear()} {site.name} · {site.location}</p>
         <p>
-          {site.links.email ? <><a href={`mailto:${site.links.email}`}>{site.links.email}</a> · </> : null}
-          <a href={site.links.github} rel="me">GitHub</a>
+          {site.links.email ? <><a class="hit" href={`mailto:${site.links.email}`}>{site.links.email}</a> · </> : null}
+          <a class="hit" href={site.links.github} rel="me">GitHub</a>
         </p>
       </div>
     </footer>
@@ -150,8 +150,14 @@ const ogImage = new URL(image, Astro.site);
     white-space: nowrap;
   }
 
-  nav a:hover {
-    color: var(--text);
+  @media (hover: hover) {
+    nav a:hover {
+      color: var(--text);
+    }
+  }
+
+  .main {
+    flex: 1;
   }
 
   .site-footer {
@@ -159,7 +165,7 @@ const ogImage = new URL(image, Astro.site);
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 0.5rem 2rem;
-    padding-block: 3rem 2.5rem;
+    padding-block: 3rem max(2.5rem, env(safe-area-inset-bottom, 0px));
     margin-top: clamp(4rem, 10vw, 8rem);
     border-top: 1px solid var(--line);
     color: var(--text-3);

@@ -20,7 +20,7 @@ const shots = [
 
   <article class="case">
     <header class="head wrap">
-      <a class="back" href="/#work"><span aria-hidden="true">← </span>Work</a>
+      <a class="back hit" href="/#work"><span aria-hidden="true">← </span>Work</a>
       <p class="label">Case study · {twain.year} · {twain.platforms}</p>
       <h1 class="serif">{twain.title}</h1>
       <p class="tagline">{twain.tagline}</p>
@@ -104,8 +104,10 @@ const shots = [
     text-decoration: none;
   }
 
-  .back:hover {
-    color: var(--text);
+  @media (hover: hover) {
+    .back:hover {
+      color: var(--text);
+    }
   }
 
   .head h1 {
@@ -116,7 +118,7 @@ const shots = [
   }
 
   .tagline {
-    margin-top: 0.75rem;
+    margin-top: 1.1rem;
     font-size: clamp(1.125rem, 2vw, 1.375rem);
     color: var(--text-2);
   }

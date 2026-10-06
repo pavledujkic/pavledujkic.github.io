@@ -37,7 +37,7 @@ import { site } from "../site";
               ))}
             </dl>
             {p.page ? (
-              <a class="more" href={`/work/${p.slug}/`}>
+              <a class="more hit" href={`/work/${p.slug}/`}>
                 Read the case study<span aria-hidden="true">→</span>
               </a>
             ) : null}
@@ -55,8 +55,8 @@ import { site } from "../site";
         I’m Pavle, a software engineer in Belgrade, Serbia. This is where I put the things I build, starting with Twain.
       </p>
       <p class="links">
-        {site.links.email ? <a href={`mailto:${site.links.email}`}>{site.links.email}</a> : null}
-        <a href={site.links.github} rel="me">GitHub</a>
+        {site.links.email ? <a class="hit" href={`mailto:${site.links.email}`}>{site.links.email}</a> : null}
+        <a class="hit" href={site.links.github} rel="me">GitHub</a>
       </p>
     </div>
   </section>
@@ -152,7 +152,7 @@ import { site } from "../site";
   }
 
   .tagline {
-    margin-top: 0.5rem;
+    margin-top: 0.85rem;
     font-size: 1.125rem;
     color: var(--text);
   }
@@ -201,18 +201,20 @@ import { site } from "../site";
     transition: border-color 0.2s var(--ease);
   }
 
-  .more:hover {
-    border-color: currentColor;
+  @media (hover: hover) {
+    .more:hover {
+      border-color: currentColor;
+    }
+
+    .more:hover span {
+      transform: translateX(3px);
+    }
   }
 
   .more span {
     display: inline-block;
     margin-left: 0.35em;
     transition: transform 0.2s var(--ease);
-  }
-
-  .more:hover span {
-    transform: translateX(3px);
   }
 
   .next {

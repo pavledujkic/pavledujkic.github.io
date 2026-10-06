@@ -72,12 +72,13 @@ const [a, b] = project.colors;
     width: var(--w);
   }
 
+  /* Never taller than the window (a laptop, a phone on its side), within reason. */
   .card {
-    --w: min(19rem, 76vw);
+    --w: min(19rem, 76vw, max(14rem, calc((100vh - 8rem) * 390 / 844)));
   }
 
   .hero {
-    --w: min(22rem, 82vw);
+    --w: min(22rem, 82vw, max(15rem, calc((100vh - 8rem) * 390 / 844)));
   }
 
   /* Soft light behind the phone: wide gradients rather than a blur filter (cheaper to paint). */
@@ -145,9 +146,23 @@ const [a, b] = project.colors;
       transform 0.15s var(--ease);
   }
 
-  .ctl:hover {
-    color: var(--text);
-    border-color: var(--text-3);
+  /* A touch target a little bigger than the button, still clear of its neighbour. */
+  .ctl {
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .ctl::after {
+    content: "";
+    position: absolute;
+    inset: -0.25rem;
+  }
+
+  @media (hover: hover) {
+    .ctl:hover {
+      color: var(--text);
+      border-color: var(--text-3);
+    }
   }
 
   .ctl:active {
