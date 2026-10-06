@@ -1,0 +1,334 @@
+---
+import Base from "../../layouts/Base.astro";
+import Device from "../../components/Device.astro";
+import { projects } from "../../projects";
+
+const twain = projects.find((p) => p.slug === "twain")!;
+const shots = [
+  { src: "/media/twain-conversation.webp", alt: "Face to face: each half reads the conversation in its own language", w: 600, h: 1298 },
+  { src: "/media/twain-thread.webp", alt: "The thread layout in light mode: the whole conversation, both languages", w: 600, h: 1298 },
+  { src: "/media/twain-languages.webp", alt: "Choosing a language: search, the current pair, native names", w: 600, h: 1298 },
+];
+---
+
+<Base
+  title="Twain — a face-to-face live translator · Pavle Dujkic"
+  description="Put the phone on the table and talk: each person reads and hears the other in their own language, about as soon as they stop speaking."
+  image="og-twain.png"
+>
+  <link slot="head" rel="preload" as="image" href={`/${twain.clip!.poster}`} fetchpriority="high" />
+
+  <article class="case">
+    <header class="head wrap">
+      <a class="back" href="/#work"><span aria-hidden="true">← </span>Work</a>
+      <p class="label">Case study · {twain.year} · {twain.platforms}</p>
+      <h1 class="serif">{twain.title}</h1>
+      <p class="tagline">{twain.tagline}</p>
+    </header>
+
+    <div class="stage wrap">
+      <Device project={twain} size="hero" />
+    </div>
+
+    <div class="body wrap">
+      <section>
+        <h2 class="serif">The idea</h2>
+        <p>
+          Put the phone on the table between two people and talk. Each of you reads and hears the other in your own
+          language. One half of the screen faces you; the other is turned around for the person across the table, so
+          nobody has to pass the phone back and forth.
+        </p>
+        <p>
+          Twain runs on Alibaba’s <code>qwen3.8-livetranslate-flash-realtime</code>, a model that listens and translates
+          in one step: 60 languages in, 29 spoken out. Serbian, which the model can’t target, comes out as Bosnian text
+          read by the phone’s own voice.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="serif">Fast where it counts</h2>
+        <p>
+          A conversation is only as good as its pauses. Twain keeps a translation session warm for each direction before
+          anyone touches the screen, plus a spare connection that turns a language change into a quarter-second message
+          instead of a reconnect. Audio leaves the phone in 50&nbsp;ms pieces, and the model closes each phrase after
+          0.6&nbsp;s of silence, so the translation is usually complete before the speaker’s turn has even ended.
+        </p>
+        <dl class="figures">
+          <div><dt>0.76 s</dt><dd>last word → complete translation</dd></div>
+          <div><dt>0.90 s</dt><dd>last word → translated voice (the turn-end pause)</dd></div>
+          <div><dt>2 ms</dt><dd>end of a turn → voice starts</dd></div>
+          <div><dt>0.25 s</dt><dd>to change a language</dd></div>
+        </dl>
+        <p class="note">Medians from repeated live conversations against the real model. About $0.002 per turn with voice.</p>
+      </section>
+
+      <section>
+        <h2 class="serif">Made for noisy places</h2>
+        <p>
+          Loud cafés broke the first version: a detector that listened for loudness opened the mic on background chatter
+          and never let it close. Twain now listens for the pitch of a voice against a noise floor it learns from the room,
+          and switches on the phone’s own noise suppression and echo cancellation. Across 78 noisy recordings it gets 51
+          turns right where the old detector got 6, and noise alone never opens the mic. Where it’s really loud, you can
+          hold your half while you talk.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="serif">Tested against the real thing</h2>
+        <p>
+          Every change runs against the live model, not just a mock: the engine with recorded voices, the app in a
+          browser, native builds on an Android emulator and an iPhone simulator, and a performance suite that replays
+          conversations under café, street and fan noise.
+        </p>
+        <p>
+          That’s how the model’s strangest habit turned up. After a noisy moment it sometimes answers clear speech with
+          nothing, then quietly merges those words into a later turn. Twain now notices an empty answer to speech it
+          clearly heard and sends the turn again on a fresh connection, about 1.7&nbsp;s later.
+        </p>
+        <table>
+          <caption class="visually-hidden">Before and after resending empty answers</caption>
+          <thead>
+            <tr><th scope="col"></th><th scope="col">Before</th><th scope="col">After</th></tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row">Noisy turns translated</th><td>14 of 39</td><td>34 of 39</td></tr>
+            <tr><th scope="row">Clean turns lost</th><td>2 of 14</td><td>0 of 33</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2 class="serif">The small things</h2>
+        <ul class="small-things">
+          <li>Auto-turn hands the mic to the other person once the translation has played.</li>
+          <li>Your own words appear as you speak, so you can see you’re being heard.</li>
+          <li>“Again” replays the last translation; one tap on the centre stops everything.</li>
+          <li>The other person is greeted in their own language before anyone speaks.</li>
+          <li>Haptics on every turn change, dark and light, VoiceOver and TalkBack.</li>
+        </ul>
+      </section>
+    </div>
+
+    <div class="gallery wrap" role="list">
+      {
+        shots.map((s) => (
+          <figure role="listitem">
+            <img src={s.src} alt={s.alt} width={s.w} height={s.h} loading="lazy" decoding="async" />
+          </figure>
+        ))
+      }
+    </div>
+
+    <div class="body wrap">
+      <section>
+        <h2 class="label">Built with</h2>
+        <ul class="chips">{twain.stack.map((s) => <li>{s}</li>)}</ul>
+      </section>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .head {
+    padding-top: clamp(2rem, 6vw, 4rem);
+    text-align: center;
+  }
+
+  .back {
+    display: inline-block;
+    margin-bottom: 2.5rem;
+    color: var(--text-3);
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--text);
+  }
+
+  .head h1 {
+    margin-top: 0.75rem;
+    font-size: clamp(4rem, 13vw, 8.5rem);
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+
+  .tagline {
+    margin-top: 0.75rem;
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    color: var(--text-2);
+  }
+
+  .stage {
+    display: grid;
+    justify-items: center;
+    padding-block: clamp(3rem, 8vw, 5rem);
+  }
+
+  .body {
+    max-width: calc(var(--measure) + 2 * var(--gutter));
+  }
+
+  section + section {
+    margin-top: clamp(3rem, 7vw, 4.5rem);
+  }
+
+  .body h2.serif {
+    font-size: clamp(1.875rem, 4vw, 2.5rem);
+    line-height: 1.1;
+    margin-bottom: 1rem;
+  }
+
+  .body p + p {
+    margin-top: 1rem;
+  }
+
+  .body p,
+  .body li {
+    color: var(--text-2);
+  }
+
+  code {
+    font: 0.85em/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    padding: 0.15em 0.4em;
+    border-radius: 6px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    color: var(--text);
+    word-break: break-word;
+  }
+
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.5rem 2rem;
+    margin: 2rem 0 0;
+    padding: 1.75rem 0;
+    border-block: 1px solid var(--line);
+  }
+
+  .figures dt {
+    font-family: var(--serif);
+    font-size: clamp(2.25rem, 5vw, 3rem);
+    line-height: 1;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .figures dd {
+    margin: 0.5rem 0 0;
+    font-size: 0.875rem;
+    color: var(--text-3);
+  }
+
+  .note {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+  }
+
+  table {
+    width: 100%;
+    margin-top: 2rem;
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+  }
+
+  th,
+  td {
+    padding: 0.8rem 0;
+    text-align: left;
+    border-bottom: 1px solid var(--line);
+  }
+
+  thead th {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-3);
+  }
+
+  tbody th {
+    font-weight: 400;
+    color: var(--text-2);
+  }
+
+  td:last-child {
+    color: var(--text);
+    font-weight: 550;
+  }
+
+  .small-things {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .small-things li {
+    position: relative;
+    padding: 0.85rem 0 0.85rem 1.5rem;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .small-things li::before {
+    content: "";
+    position: absolute;
+    left: 0.15rem;
+    top: 1.45rem;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff7a45, #3da9fc);
+  }
+
+  .gallery {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(15rem, 62vw);
+    gap: clamp(1rem, 3vw, 2rem);
+    margin-block: clamp(4rem, 9vw, 6rem);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .gallery figure {
+    margin: 0;
+    scroll-snap-align: center;
+  }
+
+  .gallery img {
+    width: 100%;
+    height: auto;
+    border-radius: 1.6rem;
+    border: 1px solid var(--line);
+    box-shadow: 0 1.5rem 3rem -1.5rem rgba(0, 0, 0, 0.45);
+  }
+
+  @media (min-width: 52rem) {
+    .gallery {
+      grid-auto-flow: row;
+      grid-template-columns: repeat(3, minmax(0, 16rem));
+      justify-content: center;
+      overflow: visible;
+    }
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 1rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .chips li {
+    padding: 0.35rem 0.75rem;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    font-size: 0.8125rem;
+    color: var(--text-2);
+  }
+</style>

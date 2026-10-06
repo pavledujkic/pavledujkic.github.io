@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+---
+
+<Base title="Not found · Pavle Dujkic">
+  <section class="wrap lost">
+    <p class="label">404</p>
+    <h1 class="serif">Nothing here.</h1>
+    <p><a href="/">Back to the start</a></p>
+  </section>
+</Base>
+
+<style>
+  .lost {
+    padding-block: clamp(5rem, 15vw, 10rem);
+  }
+  h1 {
+    margin: 1rem 0 1.5rem;
+    font-size: clamp(3rem, 9vw, 5.5rem);
+    line-height: 1;
+  }
+</style>

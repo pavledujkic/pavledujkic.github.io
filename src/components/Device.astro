@@ -1,0 +1,141 @@
+---
+// A phone with the project's clip on its screen: the poster paints first; the clip loads and
+// plays muted once the page has loaded and while it's on screen, with a button to hear the
+// conversation from the start.
+import type { Project } from "../projects";
+
+interface Props {
+  project: Project;
+  size?: "card" | "hero";
+}
+
+const { project, size = "card" } = Astro.props;
+const clip = project.clip!;
+const [a, b] = project.colors;
+---
+
+<figure class:list={["device", size]} data-clip style={`--a:${a};--b:${b}`}>
+  <div class="glow" aria-hidden="true"></div>
+  <div class="frame" style={`view-transition-name: clip-${project.slug}`}>
+    <video
+      width={clip.width}
+      height={clip.height}
+      poster={`/${clip.poster}`}
+      muted
+      loop
+      playsinline
+      preload="none"
+      aria-label={`${project.title}: a recorded conversation in the app`}
+    >
+      <source src={`/${clip.webm}`} type='video/webm; codecs="vp9, opus"' />
+      <source src={`/${clip.mp4}`} type="video/mp4" />
+      {clip.captions ? <track kind="captions" src={`/${clip.captions}`} srclang="en" label="Conversation" /> : null}
+    </video>
+  </div>
+  <figcaption>
+    <button type="button" class="sound" data-sound aria-pressed="false">
+      <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+        <path d="M3 8h3l4-3.5v11L6 12H3z" fill="currentColor"></path>
+        <path class="waves" d="M13 7.2a4 4 0 0 1 0 5.6M15.2 5a7 7 0 0 1 0 10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+        <path class="mute" d="M13.2 7.6l4 4.8m0-4.8l-4 4.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+      </svg>
+      <span class="off">Play with sound</span><span class="on">Sound on</span>
+    </button>
+  </figcaption>
+</figure>
+
+
+<style>
+  .device {
+    position: relative;
+    margin: 0;
+    display: grid;
+    justify-items: center;
+    gap: 1.1rem;
+    width: var(--w);
+  }
+
+  .card {
+    --w: min(19rem, 76vw);
+  }
+
+  .hero {
+    --w: min(22rem, 82vw);
+  }
+
+  /* Soft light behind the phone: wide gradients rather than a blur filter (cheaper to paint). */
+  .glow {
+    position: absolute;
+    inset: -6% -40% 0;
+    background:
+      radial-gradient(closest-side at 32% 40%, color-mix(in srgb, var(--a) 42%, transparent), transparent),
+      radial-gradient(closest-side at 70% 64%, color-mix(in srgb, var(--b) 38%, transparent), transparent);
+    opacity: 0.45;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .frame {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    aspect-ratio: 390 / 844;
+    padding: 0.55rem;
+    border-radius: 2.9rem;
+    background: linear-gradient(150deg, #34343a, #121214 46%, #24242a);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.07),
+      0 0 0 1px rgba(0, 0, 0, 0.5),
+      0 2.5rem 5rem -1.5rem rgba(0, 0, 0, 0.55);
+  }
+
+  video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 2.35rem;
+    background: #0a0a0b;
+  }
+
+  .sound {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.95rem 0.5rem 0.8rem;
+    border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    background: color-mix(in srgb, var(--bg-raised) 80%, transparent);
+    color: var(--text-2);
+    font: 500 0.8125rem/1 var(--sans);
+    cursor: pointer;
+    transition:
+      color 0.2s var(--ease),
+      border-color 0.2s var(--ease),
+      transform 0.15s var(--ease);
+  }
+
+  .sound:hover {
+    color: var(--text);
+    border-color: var(--text-3);
+  }
+
+  .sound:active {
+    transform: scale(0.97);
+  }
+
+  .sound .on,
+  .sound .waves,
+  [data-audible] .sound .off,
+  [data-audible] .sound .mute {
+    display: none;
+  }
+
+  [data-audible] .sound .on,
+  [data-audible] .sound .waves {
+    display: inline;
+  }
+
+  [data-audible] .sound {
+    color: var(--text);
+  }
+</style>
