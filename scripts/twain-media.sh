@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-# Turns the Twain demo recorder's output (talk-talk: apps/mobile/e2e/demo.e2e.mjs, the "demo"
-# workflow's artifact) into the site's media: the clip, its poster, captions and stills.
+# Turns a Twain demo recording into the site's media: the clip, its poster, captions and stills.
 #   scripts/twain-media.sh <dark-take-dir> [<light-take-dir>]
 set -euo pipefail
 dark="${1:?usage: $0 dark-take-dir [light-take-dir]}"

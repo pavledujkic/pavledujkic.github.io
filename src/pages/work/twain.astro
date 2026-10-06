@@ -38,20 +38,14 @@ const shots = [
           language. One half of the screen faces you; the other is turned around for the person across the table, so
           nobody has to pass the phone back and forth.
         </p>
-        <p>
-          Twain runs on Alibaba’s <code>qwen3.8-livetranslate-flash-realtime</code>, a model that listens and translates
-          in one step: 60 languages in, 29 spoken out. Serbian, which the model can’t target, comes out as Bosnian text
-          read by the phone’s own voice.
-        </p>
+        <p>It works across 61 languages, and speaks the translation aloud in 29 of them.</p>
       </section>
 
       <section>
         <h2 class="serif">Fast where it counts</h2>
         <p>
-          A conversation is only as good as its pauses. Twain keeps a translation session warm for each direction before
-          anyone touches the screen, plus a spare connection that turns a language change into a quarter-second message
-          instead of a reconnect. Audio leaves the phone in 50&nbsp;ms pieces, and the model closes each phrase after
-          0.6&nbsp;s of silence, so the translation is usually complete before the speaker’s turn has even ended.
+          A conversation is only as good as its pauses. With Twain, the translation is usually complete before the
+          speaker’s pause has even ended, and the translated voice starts the moment the turn passes across the table.
         </p>
         <dl class="figures">
           <div><dt>0.76 s</dt><dd>last word → complete translation</dd></div>
@@ -59,42 +53,16 @@ const shots = [
           <div><dt>2 ms</dt><dd>end of a turn → voice starts</dd></div>
           <div><dt>0.25 s</dt><dd>to change a language</dd></div>
         </dl>
-        <p class="note">Medians from repeated live conversations against the real model. About $0.002 per turn with voice.</p>
+        <p class="note">Medians from repeated live conversations.</p>
       </section>
 
       <section>
         <h2 class="serif">Made for noisy places</h2>
         <p>
-          Loud cafés broke the first version: a detector that listened for loudness opened the mic on background chatter
-          and never let it close. Twain now listens for the pitch of a voice against a noise floor it learns from the room,
-          and switches on the phone’s own noise suppression and echo cancellation. Across 78 noisy recordings it gets 51
-          turns right where the old detector got 6, and noise alone never opens the mic. Where it’s really loud, you can
+          Twain is made for cafés, streets and stations. It hears the person speaking, not the room: chatter in the
+          background doesn’t set it off, and its own voice never gets translated back. Where it’s really loud, you can
           hold your half while you talk.
         </p>
-      </section>
-
-      <section>
-        <h2 class="serif">Tested against the real thing</h2>
-        <p>
-          Every change runs against the live model, not just a mock: the engine with recorded voices, the app in a
-          browser, native builds on an Android emulator and an iPhone simulator, and a performance suite that replays
-          conversations under café, street and fan noise.
-        </p>
-        <p>
-          That’s how the model’s strangest habit turned up. After a noisy moment it sometimes answers clear speech with
-          nothing, then quietly merges those words into a later turn. Twain now notices an empty answer to speech it
-          clearly heard and sends the turn again on a fresh connection, about 1.7&nbsp;s later.
-        </p>
-        <table>
-          <caption class="visually-hidden">Before and after resending empty answers</caption>
-          <thead>
-            <tr><th scope="col"></th><th scope="col">Before</th><th scope="col">After</th></tr>
-          </thead>
-          <tbody>
-            <tr><th scope="row">Noisy turns translated</th><td>14 of 39</td><td>34 of 39</td></tr>
-            <tr><th scope="row">Clean turns lost</th><td>2 of 14</td><td>0 of 33</td></tr>
-          </tbody>
-        </table>
       </section>
 
       <section>
@@ -119,12 +87,6 @@ const shots = [
       }
     </div>
 
-    <div class="body wrap">
-      <section>
-        <h2 class="label">Built with</h2>
-        <ul class="chips">{twain.stack.map((s) => <li>{s}</li>)}</ul>
-      </section>
-    </div>
   </article>
 </Base>
 
@@ -159,10 +121,12 @@ const shots = [
     color: var(--text-2);
   }
 
+  /* The glow may spread past the phone, never past the screen's edge. */
   .stage {
     display: grid;
     justify-items: center;
     padding-block: clamp(3rem, 8vw, 5rem);
+    overflow-x: clip;
   }
 
   .body {
@@ -186,16 +150,6 @@ const shots = [
   .body p,
   .body li {
     color: var(--text-2);
-  }
-
-  code {
-    font: 0.85em/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    padding: 0.15em 0.4em;
-    border-radius: 6px;
-    background: var(--bg-raised);
-    border: 1px solid var(--line);
-    color: var(--text);
-    word-break: break-word;
   }
 
   .figures {
@@ -226,39 +180,6 @@ const shots = [
     font-size: 0.875rem;
   }
 
-  table {
-    width: 100%;
-    margin-top: 2rem;
-    border-collapse: collapse;
-    font-size: 0.9375rem;
-    font-variant-numeric: tabular-nums;
-  }
-
-  th,
-  td {
-    padding: 0.8rem 0;
-    text-align: left;
-    border-bottom: 1px solid var(--line);
-  }
-
-  thead th {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-3);
-  }
-
-  tbody th {
-    font-weight: 400;
-    color: var(--text-2);
-  }
-
-  td:last-child {
-    color: var(--text);
-    font-weight: 550;
-  }
-
   .small-things {
     margin: 0;
     padding: 0;
@@ -287,7 +208,7 @@ const shots = [
     grid-auto-flow: column;
     grid-auto-columns: min(15rem, 62vw);
     gap: clamp(1rem, 3vw, 2rem);
-    margin-block: clamp(4rem, 9vw, 6rem);
+    margin-top: clamp(4rem, 9vw, 6rem);
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
@@ -313,22 +234,5 @@ const shots = [
       justify-content: center;
       overflow: visible;
     }
-  }
-
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin: 1rem 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .chips li {
-    padding: 0.35rem 0.75rem;
-    border: 1px solid var(--line-strong);
-    border-radius: 999px;
-    font-size: 0.8125rem;
-    color: var(--text-2);
   }
 </style>

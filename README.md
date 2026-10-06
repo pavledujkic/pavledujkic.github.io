@@ -22,8 +22,7 @@ Pushing to `main` publishes it (GitHub Pages, Source: GitHub Actions).
 
 ## Twain's clip
 
-Recorded by the Twain repository's `demo` workflow (a real conversation against the live model,
-with natural voices and the translated voice mixed in). Download its artifact, then:
+A real recorded conversation, with the translated voice mixed in. To replace it with a new take:
 
 ```bash
 scripts/twain-media.sh path/to/dark-take [path/to/light-take]
@@ -31,7 +30,7 @@ scripts/twain-media.sh path/to/dark-take [path/to/light-take]
 
 ## Speed
 
-Lighthouse (mobile, throttled), both pages: Performance 99, Accessibility 100, Best Practices 100,
-SEO 100. The home page is ~6 KB of HTML and CSS (gzipped) plus ~90 KB of fonts and a 21 KB poster
+Lighthouse on the live site, both pages: Performance 98 on a throttled phone and 100 on desktop;
+Accessibility, Best Practices and SEO 100. The home page is ~6 KB of HTML and CSS (gzipped) plus ~90 KB of fonts and a 21 KB poster
 before the clip starts; text doesn't move when the fonts arrive (metric-matched local fallbacks,
 `scripts/fallbacks.mjs`).

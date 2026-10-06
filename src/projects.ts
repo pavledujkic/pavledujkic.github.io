@@ -10,7 +10,6 @@ export interface Project {
   /** Two colours for the glow behind its clip. */
   colors: [string, string];
   stats: Array<{ value: string; label: string }>;
-  stack: string[];
   clip?: { webm: string; mp4: string; poster: string; captions?: string; width: number; height: number };
   page: boolean;
 }
@@ -30,7 +29,6 @@ export const projects: Project[] = [
       { value: "2 ms", label: "from the end of a turn to the translated voice" },
       { value: "61", label: "languages, 29 of them spoken" },
     ],
-    stack: ["React Native", "Expo", "TypeScript", "Qwen realtime", "Bun", "Cloudflare Workers", "Playwright", "Maestro"],
     clip: {
       webm: "media/twain.webm",
       mp4: "media/twain.mp4",
