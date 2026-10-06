@@ -26,7 +26,7 @@ export const projects: Project[] = [
     colors: ["#FF7A45", "#3DA9FC"],
     stats: [
       { value: "0.76 s", label: "from the last word to the full translation" },
-      { value: "2 ms", label: "from the end of a turn to the translated voice" },
+      { value: "0.90 s", label: "from the last word to the translated voice" },
       { value: "61", label: "languages, 29 of them spoken" },
     ],
     clip: {

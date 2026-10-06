@@ -38,7 +38,7 @@ import { site } from "../site";
             </dl>
             {p.page ? (
               <a class="more" href={`/work/${p.slug}/`}>
-                How it’s built<span aria-hidden="true">→</span>
+                Read the case study<span aria-hidden="true">→</span>
               </a>
             ) : null}
           </div>
@@ -89,7 +89,8 @@ import { site } from "../site";
 
   .intro h1 {
     margin-top: 1.1rem;
-    max-width: 12ch;
+    /* In em, not ch: the same line breaks before and after the web font arrives. */
+    max-width: 6em;
     font-size: clamp(3rem, 9.5vw, 6.75rem);
     line-height: 0.98;
     letter-spacing: -0.025em;
@@ -97,7 +98,7 @@ import { site } from "../site";
 
   .intro h1 em {
     font-style: italic;
-    background: linear-gradient(100deg, #ff7a45 10%, #ff9d5c 45%, #3da9fc 95%);
+    background: var(--gradient);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
